@@ -76,7 +76,7 @@ def crawlDelistedCompany(companyType):
             '%s&selectYear=%d' % (url, lastYear), timeout=(2, 15))
         resultCurrent.encoding = 'utf-8'
         resultLast.encoding = 'utf-8'
-            
+
         html_dfCurr = pd.read_html(StringIO(resultCurrent.text), header=1)
         html_dfLast = pd.read_html(StringIO(resultLast.text), header=1)
         html_df = pd.concat([html_dfCurr[0], html_dfLast[0]])
@@ -89,7 +89,7 @@ def crawlDelistedCompany(companyType):
         }
         body = {
             'Submit': '查詢',
-                        'select_year': str(currentYear - 1911),
+            'select_year': str(currentYear - 1911),
             'DELIST_REASON': '-1'
         }
         body['select_year'] = str(currentYear - 1911)
@@ -109,7 +109,7 @@ def crawlDelistedCompany(companyType):
         html_dfCurr = pd.read_html(StringIO(resultCurrent.text), header=0)
         html_dfLast = pd.read_html(StringIO(resultLast.text), header=0)
         html_df = pd.concat([html_dfCurr[0], html_dfLast[0]])
-        
+
         res = html_df['股票代號'].values.tolist()
 
     return res

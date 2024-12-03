@@ -13,7 +13,7 @@ def updateSiiDailyPrice(datetimeIn=datetime.now()):
         data = crawlSiiDailyPrice(datetimeIn)
     except Exception as e:
         raise e
-    
+
     if data is None or data.shape[0] < 5:
         del data
         gc.collect()
@@ -72,7 +72,7 @@ def updateOtcDailyPrice(datetimeIn=datetime.now()):
         try:
             if stock_price[2].strip() != '---':
                 dataPayload['本日收盤價'] = float(stock_price[2])
-            
+
             if stock_price[3].strip() == '---':
                 dataPayload['本日漲跌'] = 0
             else:
@@ -82,7 +82,7 @@ def updateOtcDailyPrice(datetimeIn=datetime.now()):
         except IndexError as ie:
             print("%s get into IndexError with %s"% (id, ie))
         except Exception as ex:
-            print("{} {}: {}".format(id, dataStock, ex))
+            print("{} {}: {}".format(id, dataPayload, ex))
         else:
             try:
                 res = requests.post(dailyInfoApi, data=json.dumps(dataPayload))
@@ -103,13 +103,12 @@ def updateDailyPrice(datetimeIn=datetime.now()):
     """
     curTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     pushSlackMessage("Stocker股價更新", '{} crawler work start.'.format(curTime))
-    
+
     try:
         updateSiiDailyPrice(datetimeIn)
         updateOtcDailyPrice(datetimeIn)
     except Exception as ex:
-        pushSlackMessage("Stocker股價更新", f'股價更新錯誤: {ex}')    
+        pushSlackMessage("Stocker股價更新", f'股價更新錯誤: {ex}')
     finally:
         curTime = datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
         pushSlackMessage("Stocker股價更新", '{} crawler work done.'.format(curTime))
-
